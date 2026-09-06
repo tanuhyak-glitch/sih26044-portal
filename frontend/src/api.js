@@ -1,4 +1,4 @@
-const BASE = "/api";
+const BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : "/api";
 
 async function request(path, { method = "GET", body, token } = {}) {
   const headers = { "Content-Type": "application/json" };
@@ -31,7 +31,7 @@ export const api = {
   login: (body) => request("/auth/login", { method: "POST", body }),
   me: (token) => request("/auth/me", { token }),
   oauthProviders: () => request("/auth/oauth-providers"),
-  oauthStartUrl: (provider, role) => `/api/auth/oauth/${provider}?role=${encodeURIComponent(role)}`,
+  oauthStartUrl: (provider, role) => `${BASE}/auth/oauth/${provider}?role=${encodeURIComponent(role)}`,
 
   onboarding: (token) => request("/onboarding/me", { token }),
   saveOnboarding: (token, body) => request("/onboarding/me", { method: "PUT", token, body }),
@@ -75,12 +75,12 @@ export const api = {
 
   myCertificates: (token, studentId) => request(`/certificates/student/${studentId}`, { token }),
   submitExternalCertificate: (token, formData) =>
-    fetch("/api/certificates/submit-external", {
+    fetch(`${BASE}/certificates/submit-external`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
     }).then((res) => res.json()),
 
-  myRecommendations: (token) => request("/recommendations/me", { token }),
+  myRecommendations: (token) => request("/resume-builder/me", { token }),
   myResume: (token) => request("/resume-builder/me", { token }),
 };
